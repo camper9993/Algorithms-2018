@@ -3,6 +3,7 @@ package lesson3;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -66,9 +67,50 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        root = remove(root,o);
+        if (root == null)
+        return false;
+        else {
+            size--;
+            return true;
+        }
     }
+
+    private Node<T> remove(Node<T> root, Object o) {
+        T key = (T) o;
+        if (root == null) {
+            return null;
+        }
+        int comparator = key.compareTo(root.value);
+        if (comparator < 0)
+            remove(root.left,o);
+        else
+            if (comparator > 0)
+                 remove(root.right,o);
+            else {
+                if (root.left == null)//Когда мы дошли до узла который
+                    return root.right;//хотим удалить и у него только один дочерний узел,
+                else                  //то мы ставим этот узел на место удаляемого.
+                    if (root.right == null)
+                    return root.left;
+                /** Если у root два дочерних узла, мы находим минимальный узел в правом поддереве root
+                 *  копируем его значение в root а потом удаляем минимальный узел в правом поддереве root.
+                 */
+                key = minNodeRightSubtree(root.right);
+                root.right = remove(root.right,key);
+            }
+        return root;
+    }
+
+    private T minNodeRightSubtree(Node<T> node) {
+        T min = node.value;
+        while (node.left != null) {
+            min = node.left.value;
+            node = node.left;
+        }
+        return min;
+    }
+
 
     @Override
     public boolean contains(Object o) {
@@ -102,15 +144,39 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
         private Node<T> current = null;
 
-        private BinaryTreeIterator() {}
+        private Stack<Node<T>> stack;
+
+        private BinaryTreeIterator(Node<T> root) {
+            stack = new Stack<Node<T>>();
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+        }
+
 
         /**
          * Поиск следующего элемента
          * Средняя
+         *
+         * Долго не мог понять, как это нужно сделать, без изменения конструктора, и с использованием лишь
+         * current, спросил у Кирилла Алексеевича на практике, можно ли менять исходные данные, четкого ответа
+         * не получил, но пришел к выводу, что если не поменять конструктор, то не смогу сделать задание...
+         * Если все же можно обойтись без этих изменений, хотелось бы получить какую - нибудь подсказку.
+         * P.S. Из - за того что пришллось вносить изменения в исходные данные, тесты для remove() не работают
+         * (бросает EmptyStackException)
          */
         private Node<T> findNext() {
-            // TODO
-            throw new NotImplementedError();
+            Node<T> node = stack.pop();
+            Node<T> result = node;
+            if (node.right != null) {
+                node = node.right;
+                while (node != null) {
+                    stack.push(node);
+                    node = node.left;
+                }
+            }
+            return result;
         }
 
         @Override
@@ -139,7 +205,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new BinaryTreeIterator();
+        return new BinaryTreeIterator(root);
     }
 
     @Override
