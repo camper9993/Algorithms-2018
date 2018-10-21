@@ -5,6 +5,8 @@ import kotlin.Pair;
 
 import java.util.Set;
 
+import static java.lang.StrictMath.sqrt;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -97,9 +99,41 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
-    }
+        char[] first = firs.toCharArray();
+        char[] sec = second.toCharArray();
+        char[][] arr = new char[first.length + 1][sec.length + 1];
+        StringBuilder strMax = new StringBuilder();
 
+
+        for(int i = 0;i < first.length + 1;i++) {
+            for (int j = 0;j < sec.length + 1;j++) {
+                if(i == 0 && j > 0) {
+                    arr[i][j] = sec[j - 1]; //Заполняем первую строку вторым словом
+                }
+                if (i > 0 && j == 0) {
+                    arr[i][j] = first[i - 1]; //Заполняем первый столбец первым словом
+                }
+                if (i > 0 && j > 0 && arr[0][j] == arr[i][0]) {
+                    StringBuilder str = new StringBuilder();
+                    arr[i][j] = '!'; //Ставим !, в клетку координатами которой являются одинковые буквы.
+                    str.append(arr[i][0]);
+                    int a = i;
+                    int b = j;
+                    while (arr[a - 1][b - 1] == '!' && a > 0 && b > 0) {
+                        a--;
+                        b--;                            //Проверяем, сколько одинаковых подряд букв у нас идет
+                        str.append(arr[a][0]);
+                    }
+                    if (str.length() > strMax.length()) //Если строка больше, чем предудащая максимальная подстрока, меняем ее.
+                        strMax = str;
+                }
+            }
+
+        }
+        return strMax.reverse().toString();//Так как мы записываем подстроку начиная с конца нашей таблицы то ее нужно переписать задом на перед.
+    }
+    //Трудемкость: O(n * m) n,m - длина заданный слов
+    //Ресурсоемкость : O(n * m)
     /**
      * Число простых чисел в интервале
      * Простая
@@ -108,11 +142,31 @@ public class JavaAlgorithms {
      * Если limit <= 1, вернуть результат 0.
      *
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
-     * Единица простым числом не считается.
+     * Единица простым числом не считается...
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        int count = 0;
+        if (limit <= 1)
+            return count;
+        else
+        {
+            int number = 2;
+            while (number <= limit) {
+                for(int i = 2;i <= sqrt(number);i++) {
+                    if (number % i == 0) {
+                        count--;
+                        break;
+                    }
+                }
+                number++;
+                count++;
+            }
+        }
+        return count;
     }
+    //Трудоемкость : T = O(n * log(log(n)))
+    //Ресурскоемкость : R = O(n)
+    //n = limit
 
     /**
      * Балда
