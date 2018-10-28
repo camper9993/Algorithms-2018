@@ -164,8 +164,8 @@ public class JavaAlgorithms {
         }
         return count;
     }
-    //Трудоемкость : T = O(n * log(log(n)))
-    //Ресурскоемкость : R = O(n)
+    //Трудоемкость : T = O(n * sqrt(n))
+    //Ресурскоемкость : R = O(1)
     //n = limit
 
     /**

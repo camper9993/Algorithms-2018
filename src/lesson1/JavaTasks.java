@@ -3,6 +3,8 @@ package lesson1;
 import kotlin.NotImplementedError;
 
 import java.io.*;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,26 +49,17 @@ public class JavaTasks {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
         IllegalArgumentException exception = new IllegalArgumentException("Неверный формат входных данных.");
         String line;
-        ArrayList<String> timeList = new ArrayList<String>();
-        ArrayList<Integer> intTimeList = new ArrayList<>();
+        List<String> timeList = new ArrayList<String>();
             while ((line = reader.readLine()) != null) {
                 matcher = check.matcher(line);
                 if (matcher.matches()) {
-                    timeList.add(line.replaceAll(":", ""));
+                    timeList.add(line);
                 } else throw exception;
             }
         reader.close();
-        for (String element: timeList) {
-            intTimeList.add(parseInt(element));
-        }
-        Collections.sort(intTimeList);
-        for (int element : intTimeList) {
-            StringBuilder temp = new StringBuilder("" + element);
-            while(temp.length() < 6)
-                temp.insert(0, "0");
-            temp.insert(2,':');
-            temp.insert(5,':');
-            writer.write(temp + "\n");
+        Collections.sort(timeList);
+        for (String element : timeList) {
+            writer.write(element + "\n");
         }
         writer.close();
     }
@@ -140,12 +133,12 @@ public class JavaTasks {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
         String line;
-        ArrayList<Double> timeList = new ArrayList<>();
+        List<Double> timeList = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             if(parseDouble(line) >= -273.0 && parseDouble(line) <= 500.0)
                 timeList.add(parseDouble(line));
             else
-                throw new IllegalArgumentException("Неверный формат входных данных.");
+                throw new NumberFormatException("Неверный формат входных данных.");
         }
         reader.close();
         bucketSort(timeList);
@@ -212,7 +205,7 @@ public class JavaTasks {
     static public void sortSequence(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         String line;
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         ArrayList<Integer> result = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             result.add(parseInt(line));
@@ -235,7 +228,7 @@ public class JavaTasks {
                 mostCommonNumber = entry.getKey();
 
         }
-        ArrayList<Integer> sample = new ArrayList<Integer>();
+        List<Integer> sample = new ArrayList<>();
         sample.add(mostCommonNumber);
         result.removeAll(sample);
 

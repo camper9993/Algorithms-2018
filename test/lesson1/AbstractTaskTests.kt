@@ -1,10 +1,12 @@
 package lesson1
 
+import junit.framework.Assert.assertEquals
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
 import kotlin.math.abs
 
+@Suppress("UNUSED_EXPRESSION")
 abstract class AbstractTaskTests : AbstractFileTests() {
 
     protected fun sortTimes(sortTimes: (String, String) -> Unit) {
@@ -36,6 +38,13 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in3.txt", "temp.txt")
             assertFileContent("temp.txt", File("input/time_out3.txt").readLines().joinToString(separator = "\n"))
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTimes("input/time_inWrongFormat", "temp.txt")
+        } catch (e: IllegalArgumentException) {
+
         } finally {
             File("temp.txt").delete()
         }
@@ -83,6 +92,12 @@ abstract class AbstractTaskTests : AbstractFileTests() {
 
     protected fun sortTemperatures(sortTemperatures: (String, String) -> Unit) {
         try {
+            sortTemperatures("input/temp_inWrongFormat", "temp.txt")
+        } catch (e: NumberFormatException) {
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
             sortTemperatures("input/temp_in1.txt", "temp.txt")
             assertFileContent("temp.txt",
                     """
@@ -117,7 +132,24 @@ abstract class AbstractTaskTests : AbstractFileTests() {
     }
 
     protected fun sortSequence(sortSequence: (String, String) -> Unit) {
-        // TODO: large test
+        //Вроде бы уже есть функция generateSequence для тестов большого объема входных данных.
+        try {
+            sortSequence("input/seq_EdgeTest", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                1
+                4
+                4
+                4
+                4
+                4
+                4
+                4
+                4
+                    """.trimIndent())
+        } finally {
+            File("temp.txt").delete()
+        }
         try {
             sortSequence("input/seq_in1.txt", "temp.txt")
             assertFileContent("temp.txt",
