@@ -197,6 +197,8 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
+    //Трудоемкость - ???
+    //Ресурсоемкость = R(height * width + path.size)
     static class Balda {
         private static Set<String> result;
         private static int height;
