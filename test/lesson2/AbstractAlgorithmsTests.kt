@@ -1,6 +1,5 @@
 package lesson2
 
-import com.sun.xml.internal.fastinfoset.util.StringArray
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
@@ -676,7 +675,7 @@ abstract class AbstractAlgorithmsTests {
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
         assertEquals(setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ"), baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК")))
-        assertEquals(setOf("вантус", "иван"), baldaSearcher("input/balda_inEdgeTest.txt", setOf("вантус", "иван", "няня", "яна", "нятян", "ацаца")))
+        assertEquals(setOf("вантус", "иван"), baldaSearcher("input/balda_inEdgeTest", setOf("вантус", "иван", "няня", "яна", "нятян", "ацаца")))
         //largetest TODO
     }
 }
