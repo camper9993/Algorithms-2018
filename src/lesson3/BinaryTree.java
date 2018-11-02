@@ -3,7 +3,6 @@ package lesson3;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -155,17 +154,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         /**
          * Поиск следующего элемента
          * Средняя
-         *
-         * Долго не мог понять, как это нужно сделать, без изменения конструктора, и с использованием лишь
-         * current, спросил у Кирилла Алексеевича на практике, можно ли менять исходные данные, четкого ответа
-         * не получил, но пришел к выводу, что если не поменять конструктор, то не смогу сделать задание...
-         * Если все же можно обойтись без этих изменений, хотелось бы получить какую - нибудь подсказку.
-         * P.S. Из - за того что пришллось вносить изменения в исходные данные, тесты для remove() не работают
-         * (бросает EmptyStackException)
          */
         private Node<T> findNext() {
             current = stack.pop();
-            Node stackUpdate = current;
+            Node<T> stackUpdate = current;
             if (stackUpdate.right != null) {
                 stackUpdate = stackUpdate.right;
                 while (stackUpdate != null) {
@@ -194,8 +186,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            stack.remove(current);
         }
     }
 

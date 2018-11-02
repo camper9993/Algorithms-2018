@@ -1,6 +1,5 @@
 package lesson1
 
-import junit.framework.Assert.assertEquals
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
