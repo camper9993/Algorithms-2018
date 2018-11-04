@@ -676,6 +676,8 @@ abstract class AbstractAlgorithmsTests {
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
         assertEquals(setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ"), baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК")))
         assertEquals(setOf("вантус", "иван"), baldaSearcher("input/balda_inEdgeTest", setOf("вантус", "иван", "няня", "яна", "нятян", "ацаца")))
+        assertEquals(setOf("РОГАТЫЙ","ГРОПИТЬ","СТЬЮЗ","ХУЦЦЫЦЫМИНКХЭЮИЫ"),
+                baldaSearcher("input/balda_inLargeTest", setOf("РОГАТЫЙ","ГРОПИТЬ","СТЬЮЗ","ХУЦЦЫЦЫМИНКХЭЮИЫ","ВАЛЕРИЙ","НИКОЛАЙ","ВЛАДИСЛАВ")))
         //largetest TODO
     }
 }
