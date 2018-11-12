@@ -11,7 +11,7 @@ import java.util.*;
 public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
 
     private static class Node<T> {
-        final T value;
+        T value;
 
         Node<T> left = null;
 
@@ -36,12 +36,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Node<T> newNode = new Node<>(t);
         if (closest == null) {
             root = newNode;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             assert closest.left == null;
             closest.left = newNode;
-        }
-        else {
+        } else {
             assert closest.right == null;
             closest.right = newNode;
         }
@@ -66,16 +64,12 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        root = remove(root,o);
-        if (root == null)
-        return false;
-        else {
-            size--;
-            return true;
-        }
+        root = delete(root, o);
+        size--;
+        return true;
     }
 
-    private Node<T> remove(Node<T> root, Object o) {
+    public Node<T> delete(Node<T> root, Object o) {
         @SuppressWarnings("unchecked")
         T key = (T) o;
         if (root == null) {
@@ -83,21 +77,23 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
         int comparator = key.compareTo(root.value);
         if (comparator < 0)
-            root.left = remove(root.left,o);
-        else
-            if (comparator > 0)
-                 root.right = remove(root.right,o);
-            else {
-                /** Если у root два дочерних узла, мы находим минимальный узел в правом поддереве root
-                 *  копируем его значение в root а потом удаляем минимальный узел в правом поддереве root.
-                 */
-                if (root.left != null && root.right != null) {
-                    key = minNodeRightSubtree(root.right);
-                    root.right = remove(root.right, key);
-                }
-                else
-                    return root.left == null ? root.right : root.left;
+            root.left = delete(root.left, o);
+        else if (comparator > 0)
+            root.right = delete(root.right, o);
+        else {
+            /** Если у root два дочерних узла, мы находим минимальный узел в правом поддереве root
+             *  копируем его значение в root а потом удаляем минимальный узел в правом поддереве root.
+             */
+            if (root.left != null && root.right != null) {
+                root.value = minNodeRightSubtree(root.right);
+                root.right = delete(root.right, root.value);
             }
+            else if (root.left != null)
+                return root.left;
+            else
+                return root.right;
+
+        }
         return root;
     }
 
@@ -128,12 +124,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             if (start.left == null) return start;
             return find(start.left, value);
-        }
-        else {
+        } else {
             if (start.right == null) return start;
             return find(start.right, value);
         }
@@ -142,12 +136,13 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     public class BinaryTreeIterator implements Iterator<T> {
         private Node<T> current;
 
-        Stack<Node<T>> stack = new Stack<>();
+        private Stack<Node<T>> stack = new Stack<>();
 
         private BinaryTreeIterator() {
-            while (root != null) {
-                stack.push(root);
-                root = root.left;
+            current = root;
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
             }
         }
 
@@ -155,7 +150,13 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          * Поиск следующего элемента
          * Средняя
          */
-        private Node<T> findNext() {
+        @Override
+        public boolean hasNext() {
+            return !stack.empty();
+        }
+
+        @Override
+        public T next() {
             current = stack.pop();
             Node<T> stackUpdate = current;
             if (stackUpdate.right != null) {
@@ -165,17 +166,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
                     stackUpdate = stackUpdate.left;
                 }
             }
-            return current;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return !stack.empty();
-        }
-
-        @Override
-        public T next() {
-            current = findNext();
             if (current == null) throw new NoSuchElementException();
             return current.value;
         }
@@ -186,7 +176,11 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public void remove() {
-            stack.remove(current);
+            if (stack.size() > 1) {
+                delete(root,current.value);
+                current = stack.pop();
+            }
+            else delete(root,current.value);
         }
     }
 
@@ -226,8 +220,27 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        SortedSet<T> result = new TreeSet<>();
+        int size = size();
+        BinaryTreeIterator iterator = new BinaryTreeIterator();
+        if (size == size()) {
+            while (iterator.hasNext()) {
+                T value = iterator.next();
+                if (value.compareTo(toElement) < 0) {
+                    result.add(value);
+                }
+            }
+        }
+            else {
+                iterator = new BinaryTreeIterator();
+                while (iterator.hasNext()) {
+                    T value = iterator.next();
+                    if (value.compareTo(toElement) < 0) {
+                        result.add(value);
+                    }
+                }
+            }
+        return result;
     }
 
     /**
