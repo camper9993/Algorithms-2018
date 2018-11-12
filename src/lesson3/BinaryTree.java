@@ -68,7 +68,8 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         size--;
         return true;
     }
-
+    //Ресурсоемкость = R(1)
+    //Трудоемкость = О(h) h - высота дерева
     public Node<T> delete(Node<T> root, Object o) {
         @SuppressWarnings("unchecked")
         T key = (T) o;
@@ -88,7 +89,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
                 root.value = minNodeRightSubtree(root.right);
                 root.right = delete(root.right, root.value);
             }
-            else if (root.left != null)
+            else if (root.left != null) //Если у root один ребенок, то root = root.left || root.right
                 return root.left;
             else
                 return root.right;
@@ -138,6 +139,8 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
         private Stack<Node<T>> stack = new Stack<>();
 
+        //Ресурсоемкость = R(n) (в худшем случае, n - количество узлов)
+        //Трудоемкость = О(n) n - кол - во узлов
         private BinaryTreeIterator() {
             current = root;
             while (current != null) {
@@ -174,13 +177,12 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          * Удаление следующего элемента
          * Сложная
          */
+        //Ресурсоемкость = R(1)
+        //Трудоемкость = O(h) h - высота дерева
         @Override
         public void remove() {
-            if (stack.size() > 1) {
-                delete(root,current.value);
-                current = stack.pop();
-            }
-            else delete(root,current.value);
+            root = delete(root,current.value);
+            size--;
         }
     }
 
@@ -217,6 +219,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      * Найти множество всех элементов меньше заданного
      * Сложная
      */
+    //Можно подсказку, для решения headSetRelationTest, не могу сам разобраться что нужно сделать
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
