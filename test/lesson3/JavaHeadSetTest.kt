@@ -15,6 +15,7 @@ class JavaHeadSetTest : AbstractHeadTailTest() {
     @Tag("Normal")
     fun headSetTest() {
         doHeadSetTest()
+        doBigTest(true, false)
     }
 
     @Test
@@ -27,6 +28,7 @@ class JavaHeadSetTest : AbstractHeadTailTest() {
     @Tag("Normal")
     fun tailSetTest() {
         doTailSetTest()
+        doBigTest(false, true)
     }
 
     @Test
@@ -39,5 +41,11 @@ class JavaHeadSetTest : AbstractHeadTailTest() {
     @Tag("Impossible")
     fun subSetTest() {
         doSubSetTest()
+        doBigTest(false, false)
+    }
+
+    @Test
+    fun subSetRelationTest() {
+        doSubSetRelationTest()
     }
 }

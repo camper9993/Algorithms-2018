@@ -1,6 +1,7 @@
 package lesson3;
 
 import kotlin.NotImplementedError;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,9 +65,14 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        root = delete(root, o);
-        size--;
-        return true;
+        root = delete(root,o);
+        if (root == null)
+            return false;
+        else {
+            root = delete(root, o);
+            size--;
+            return true;
+        }
     }
     //Ресурсоемкость = R(1)
     //Трудоемкость = О(h) h - высота дерева
@@ -106,7 +112,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
         return min;
     }
-
 
     @Override
     public boolean contains(Object o) {
@@ -208,53 +213,135 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      * Для этой задачи нет тестов (есть только заготовка subSetTest), но её тоже можно решить и их написать
      * Очень сложная
      */
+    //Трудоемкость : O(n)
+    //Ресурсоемкость : R(1)
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        return new BinarySortedSet<>(this, toElement, fromElement, false, false);
     }
 
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
      */
-    //Можно подсказку, для решения headSetRelationTest, не могу сам разобраться что нужно сделать
+    //Трудоемкость : O(n)
+    //Ресурсоемкость : R(1)
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        SortedSet<T> result = new TreeSet<>();
-        int size = size();
-        BinaryTreeIterator iterator = new BinaryTreeIterator();
-        if (size == size()) {
-            while (iterator.hasNext()) {
-                T value = iterator.next();
-                if (value.compareTo(toElement) < 0) {
-                    result.add(value);
-                }
-            }
-        }
-            else {
-                iterator = new BinaryTreeIterator();
-                while (iterator.hasNext()) {
-                    T value = iterator.next();
-                    if (value.compareTo(toElement) < 0) {
-                        result.add(value);
-                    }
-                }
-            }
-        return result;
+       return new BinarySortedSet<>(this, toElement, null, true, false);
     }
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
      */
+    //Трудоемкость : O(n)
+    //Ресурсоемкость : R(1)
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        // TODO
-        throw new NotImplementedError();
+        return new BinarySortedSet<>(this, null, fromElement, false, true);
+
+    }
+
+    public class BinarySortedSet<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
+        T upBoarder;
+        T lowBoarder;
+        boolean toLast;
+        boolean fromFirst;
+        BinaryTree tree;
+
+        BinarySortedSet(BinaryTree tree,T upBoarder, T lowBoarder, boolean fromFirst, boolean toLast) {
+            this.upBoarder = upBoarder;
+            this.lowBoarder = lowBoarder;
+            this.fromFirst = fromFirst;
+            this.toLast = toLast;
+            this.tree = tree;
+        }
+
+        public boolean inRange(Object o) {
+            T t = (T) o;
+            if (lowBoarder != null && upBoarder != null) {
+                return t.compareTo(lowBoarder) >= 0 && t.compareTo(upBoarder) < 0;
+            } else if (lowBoarder == null) {
+                return t.compareTo(upBoarder) < 0;
+            } else return t.compareTo(lowBoarder) >= 0;
+        }
+
+        @Override
+        public boolean add(T t) {
+            if (inRange(t)) {
+                tree.add(t);
+                return true;
+            }
+            else return false;
+        }
+        @Override
+        public boolean remove(Object o) {
+            if (inRange(o)) {
+                tree.remove(o);
+                return true;
+            }
+            else return false;
+        }
+        @Override
+        public boolean contains(Object o) {
+            if (inRange(o)) {
+                return tree.contains(o);
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return null;
+        }
+
+        @Override
+        public int size() {
+            int size = 0;
+            for (T aTree : (Iterable<T>) tree) {
+                if (inRange(aTree))
+                    size++;
+            }
+            return size;
+        }
+
+        @Nullable
+        @Override
+        public Comparator<? super T> comparator() {
+            return null;
+        }
+
+        @NotNull
+        @Override
+        public SortedSet<T> subSet(T fromElement, T toElement) {
+            return null;
+        }
+
+        @NotNull
+        @Override
+        public SortedSet<T> headSet(T toElement) {
+            return null;
+        }
+
+        @NotNull
+        @Override
+        public SortedSet<T> tailSet(T fromElement) {
+            return null;
+        }
+
+        @Override
+        public T first() {
+            return null;
+        }
+
+        @Override
+        public T last() {
+            return null;
+        }
     }
 
     @Override

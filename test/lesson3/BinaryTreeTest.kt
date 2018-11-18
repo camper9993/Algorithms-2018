@@ -33,6 +33,58 @@ class BinaryTreeTest {
         assertEquals(20, tree.last())
     }
 
+    private fun bigTestRemove() {
+        val tree: CheckableSortedSet<Int> = BinaryTree()
+        val treeSet = TreeSet<Int>()
+        val random = Random()
+        for (i in 1..10000) {
+            val num: Int = random.nextInt(100000)
+            tree.add(num)
+            treeSet.add(num)
+        }
+        val toRemove = tree.elementAt(random.nextInt(tree.size))
+        tree.remove(toRemove)
+        treeSet.remove(toRemove)
+        assertEquals<SortedSet<*>>(tree, treeSet)
+        assertTrue(tree.checkInvariant())
+    }
+
+    private fun bigTestIterator() {
+        val tree: CheckableSortedSet<Int> = BinaryTree()
+        val treeSet = TreeSet<Int>()
+        val random = Random()
+        for (i in 1..10000) {
+            val num: Int = random.nextInt(100000)
+            tree.add(num)
+            treeSet.add(num)
+        }
+        val treeSetIt = treeSet.iterator()
+        val treeIt = tree.iterator()
+        while (treeIt.hasNext()) {
+            assertEquals(treeIt.next(), treeSetIt.next())
+        }
+    }
+
+    private fun bigTestRemoveIterator() {
+        val tree: CheckableSortedSet<Int> = BinaryTree()
+        val treeSet = TreeSet<Int>()
+        val random = Random()
+        for (i in 1..10000) {
+            val num: Int = random.nextInt(100000)
+            tree.add(num)
+            treeSet.add(num)
+        }
+        val treeIt = tree.iterator()
+        val toRemove = tree.elementAt(random.nextInt(tree.size))
+        while (treeIt.hasNext()) {
+            val element = treeIt.next()
+            if (element == toRemove)
+                treeIt.remove()
+        }
+        treeSet.remove(toRemove)
+        assertEquals<SortedSet<*>>(treeSet, tree)
+    }
+
     @Test
     @Tag("Example")
     fun testAddKotlin() {
@@ -87,6 +139,7 @@ class BinaryTreeTest {
     @Tag("Normal")
     fun testRemoveJava() {
         testRemove { createJavaTree() }
+        bigTestRemove()
     }
 
     private fun testIterator(create: () -> CheckableSortedSet<Int>) {
@@ -121,13 +174,14 @@ class BinaryTreeTest {
     @Tag("Normal")
     fun testIteratorJava() {
         testIterator { createJavaTree() }
+        bigTestIterator()
     }
 
     private fun testIteratorRemove(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
         for (iteration in 1..100) {
             val list = mutableListOf<Int>()
-            for (i in 1..20) {
+            for (i in 1..5) {
                 list.add(random.nextInt(100))
             }
             val treeSet = TreeSet<Int>()
@@ -169,5 +223,6 @@ class BinaryTreeTest {
     @Tag("Hard")
     fun testIteratorRemoveJava() {
         testIteratorRemove { createJavaTree() }
+        bigTestRemoveIterator()
     }
 }
