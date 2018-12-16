@@ -1,5 +1,7 @@
 package lesson6
 
+import java.io.File
+import java.util.*
 import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {
@@ -44,12 +46,36 @@ abstract class AbstractDynamicTests {
                 23, 76, 34, 93, 123, 21, 56, 87, 91, 12, 45, 98, 140, 12, 5, 38, 349, 65, 94,
                 45, 76, 15, 99, 100, 88, 84, 35, 88
         )))
+        val list = generateLargeList()
+        assertEquals(longestIncreasingSubSequence(list), longestIncreasingSubSequence(list))//Largetest
     }
 
     fun shortestPathOnField(shortestPathOnField: (String) -> Int) {
         assertEquals(1, shortestPathOnField("input/field_in2.txt"))
         assertEquals(12, shortestPathOnField("input/field_in1.txt"))
         assertEquals(43, shortestPathOnField("input/field_in3.txt"))
+        assertEquals(43, shortestPathOnField("input/field_in3.txt"))
+        assertEquals(shortestPathOnField("/Users/Alex/IdeaProjects/Algorithms-2018/input/largeTable"),
+                shortestPathOnField("/Users/Alex/IdeaProjects/Algorithms-2018/input/largeTable"))
+        //large test
+    }
+
+    private fun generateLargeList(): List<Int> {
+        val random = Random()
+        return List(10000) { random.nextInt(1000) }
+    }
+
+    fun generateLargeTable() {
+        val random = Random()
+        val list = List(10000) { random.nextInt(100) }
+        val recordFile = File("/Users/Alex/IdeaProjects/Algorithms-2018/input/largeTable")
+        for (i in 0 until list.size) {
+            recordFile.appendText(list[i].toString())
+            if ((i % 100 != 99))
+                recordFile.appendText(" ")
+            if ((i + 1) % 100 == 0)
+                recordFile.appendText("\n")
+        }
     }
 
 }
